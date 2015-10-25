@@ -1,5 +1,5 @@
 /**
-List of checkboxes. 
+List of checkboxes.
 Internally value stored as javascript array of values.
 
 @class checklist
@@ -10,7 +10,7 @@ Internally value stored as javascript array of values.
 <script>
 $(function(){
     $('#options').editable({
-        value: [2, 3],    
+        value: [2, 3],
         source: [
               {value: 1, text: 'option1'},
               {value: 2, text: 'option2'},
@@ -22,7 +22,7 @@ $(function(){
 **/
 (function ($) {
     "use strict";
-    
+
     var Checklist = function (options) {
         this.init('checklist', options, Checklist.defaults);
     };
@@ -32,9 +32,9 @@ $(function(){
     $.extend(Checklist.prototype, {
         renderList: function() {
             var $label, $div;
-            
+
             this.$tpl.empty();
-            
+
             if(!$.isArray(this.sourceData)) {
                 return;
             }
@@ -42,21 +42,21 @@ $(function(){
             for(var i=0; i<this.sourceData.length; i++) {
                 $label = $('<label>').append($('<input>', {
                                            type: 'checkbox',
-                                           value: this.sourceData[i].value 
+                                           value: this.sourceData[i].value
                                      }))
                                      .append($('<span>').text(' '+this.sourceData[i].text));
-                
+
                 $('<div>').append($label).appendTo(this.$tpl);
             }
-            
+
             this.$input = this.$tpl.find('input[type="checkbox"]');
             this.setClass();
         },
-       
+
        value2str: function(value) {
            return $.isArray(value) ? value.sort().join($.trim(this.options.separator)) : '';
-       },  
-       
+       },
+
        //parse separated string
         str2value: function(str) {
            var reg, value = null;
@@ -64,13 +64,13 @@ $(function(){
                reg = new RegExp('\\s*'+$.trim(this.options.separator)+'\\s*');
                value = str.split(reg);
            } else if($.isArray(str)) {
-               value = str; 
+               value = str;
            } else {
                value = [str];
            }
            return value;
-        },       
-       
+        },
+
        //set checked on required checkboxes
        value2input: function(value) {
             this.$input.prop('checked', false);
@@ -81,43 +81,43 @@ $(function(){
                    $.each(value, function(j, val){
                        /*jslint eqeq: true*/
                        if($el.val() == val) {
-                       /*jslint eqeq: false*/                           
+                       /*jslint eqeq: false*/
                            $el.prop('checked', true);
                        }
                    });
-               }); 
-            }  
-        },  
-        
-       input2value: function() { 
+               });
+            }
+        },
+
+       input2value: function() {
            var checked = [];
            this.$input.filter(':checked').each(function(i, el) {
                checked.push($(el).val());
            });
            return checked;
-       },            
-          
+       },
+
        //collect text of checked boxes
         value2htmlFinal: function(value, element) {
            var html = [],
                checked = $.fn.editableutils.itemsByValue(value, this.sourceData),
                escape = this.options.escape;
-               
+
            if(checked.length) {
                $.each(checked, function(i, v) {
-                   var text = escape ? $.fn.editableutils.escape(v.text) : v.text; 
-                   html.push(text); 
+                   var text = escape ? $.fn.editableutils.escape(v.text) : v.text;
+                   html.push(text);
                });
-               $(element).html(html.join('<br>'));
+               $(element).html(html.length); //html.join('<br>')
            } else {
-               $(element).empty(); 
+               $(element).empty();
            }
         },
-        
+
        activate: function() {
            this.$input.first().focus();
        },
-       
+
        autosubmit: function() {
            this.$input.on('keydown', function(e){
                if (e.which === 13) {
@@ -125,32 +125,32 @@ $(function(){
                }
            });
        }
-    });      
+    });
 
     Checklist.defaults = $.extend({}, $.fn.editabletypes.list.defaults, {
         /**
-        @property tpl 
+        @property tpl
         @default <div></div>
-        **/         
+        **/
         tpl:'<div class="editable-checklist"></div>',
-        
+
         /**
-        @property inputclass 
+        @property inputclass
         @type string
         @default null
-        **/         
-        inputclass: null,        
-        
+        **/
+        inputclass: null,
+
         /**
         Separator of values when reading from `data-value` attribute
 
-        @property separator 
+        @property separator
         @type string
         @default ','
-        **/         
+        **/
         separator: ','
     });
 
-    $.fn.editabletypes.checklist = Checklist;      
+    $.fn.editabletypes.checklist = Checklist;
 
 }(window.jQuery));
